@@ -167,6 +167,8 @@
           owner: "root"
         - path: "{{ lemmy_base_dir }}/{{ domain }}/volumes/pictrs/"
           owner: "991"
+    
+    - include_tasks: tasks/docker-override.yml
 
     - name: Deploy configuration files
       block:
