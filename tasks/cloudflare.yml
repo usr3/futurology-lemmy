@@ -1,0 +1,39 @@
+---
+- name: install certbot cloudflare dns plugin
+  apt:
+    state: latest
+    pkg: ["python3-certbot-dns-cloudflare"]
+
+- name: copy certbot-dns-cloudflare ini
+  template:
+    src: "templates/cloudflare.ini"
+    dest: "/etc/ssl/cloudflare.ini"
+    mode: "0600"
+
+- name: Configure Cloudflare apt repo
+  block:
+    # https://pkg.cloudflare.com/index.html#ubuntu-jammy
+    - name: Download Cloudflare GPG Key
+      get_url:
+        url: https://pkg.cloudflare.com/cloudflare-main.gpg
+        dest: /usr/share/keyrings/cloudflare-main.gpg
+    - name: Add Cloudflare to apt
+      apt_repository:
+        repo: "deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared {{ ansible_distribution_release }} main"
+        filename: cloudflared
+        state: present
+
+- name: Update apt and install cloudflared
+  apt:
+    name: cloudflared
+    state: latest
+    update_cache: true
+
+- name: Install cloudflared service
+  command: sudo cloudflared service install {{ cloudflare_tunnel_token }}
+  ignore_errors: true
+
+- name: Ensure cloudflared service is running
+  systemd:
+    name: cloudflared
+    state: started
