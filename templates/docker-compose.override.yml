@@ -1,0 +1,4 @@
+services:
+  postfix:
+    volumes:
+      - ./volumes/postfix-relay:/etc/opendkim/keys
