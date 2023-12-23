@@ -1,0 +1,43 @@
+---
+- name: remove UFW
+  apt:
+    state: absent
+    autoremove: yes
+    pkg: ["ufw"]
+
+- name: install firewalld
+  apt:
+    state: latest
+    pkg: ["firewalld"]
+
+- name: stop firewalld
+  systemd:
+    name: firewalld
+    state: stopped
+
+- name: change firewalld backend
+  lineinfile:
+    path: /etc/firewalld/firewalld.conf
+    regexp: '^FirewallBackend=nftables'
+    line: 'FirewallBackend=iptables'
+
+- name: start firewalld
+  ansible.builtin.systemd:
+    name: firewalld
+    state: started
+
+- name: change firewalld to drop all incoming connections
+  ansible.posix.firewalld:
+    zone: public
+    state: present
+    permanent: true
+    target: DROP
+
+- name: Disable SSH password authentication
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication yes'
+    line: 'PasswordAuthentication no'
+
+- name: Reset SSH to apply changes
+  meta: reset_connection

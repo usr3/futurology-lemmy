@@ -93,6 +93,7 @@
           - "python3-setuptools"
     
     - include_tasks: tasks/cloud-init.yml
+    - include_tasks: tasks/firewalld.yml
 
     - name: Configure Docker apt repo for Ubuntu < 22.04
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version < '22.04'
