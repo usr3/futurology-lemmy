@@ -39,6 +39,7 @@ lemmyui_env_vars:
 
 postfix_env_vars:
   - POSTFIX_myhostname: "{{ domain }}"
+  - OPENDKIM_DOMAINS: "{{ domain }}"
 
 pictrs_safety_env_vars:
   # Use this in your fedi-safety to allow your worker to authenticate to pictrs-safety
