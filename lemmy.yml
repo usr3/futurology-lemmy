@@ -94,6 +94,7 @@
     
     - include_tasks: tasks/cloud-init.yml
     - include_tasks: tasks/firewalld.yml
+    - include_tasks: tasks/cloudflare.yml
 
     - name: Configure Docker apt repo for Ubuntu < 22.04
       when: ansible_distribution == 'Ubuntu' and ansible_distribution_version < '22.04'
@@ -149,7 +150,7 @@
         mode: "0644"
 
     - name: Request initial letsencrypt certificate
-      ansible.builtin.command: certbot certonly --nginx --agree-tos --cert-name '{{ domain }}' -d '{{ domain }}' -m '{{ letsencrypt_contact_email }}'
+      ansible.builtin.command: certbot certonly --dns-cloudflare --dns-cloudflare-credentials /etc/ssl/cloudflare.ini --agree-tos --cert-name '{{ domain }}' -d '{{ domain }}' -m '{{ letsencrypt_contact_email }}'
       args:
         creates: "/etc/letsencrypt/live/{{ domain }}/privkey.pem"
 
@@ -263,4 +264,4 @@
         special_time: daily
         name: certbot-renew-lemmy
         user: root
-        job: "certbot certonly --nginx --cert-name '{{ domain }}' -d '{{ domain }}' --deploy-hook 'nginx -s reload'"
+        job: "certbot certonly --dns-cloudflare --dns-cloudflare-credentials /etc/ssl/cloudflare.ini --cert-name '{{ domain }}' -d '{{ domain }}' --deploy-hook 'nginx -s reload'"
