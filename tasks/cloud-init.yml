@@ -1,0 +1,6 @@
+---
+# https://github.com/canonical/cloud-init/issues/4501
+- name: Ensure cloud-init is disabled
+  file:
+    path: /etc/cloud/cloud-init.disabled
+    state: touch  # Ensure the file exists
