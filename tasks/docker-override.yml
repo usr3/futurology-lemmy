@@ -1,0 +1,6 @@
+---
+- name: copy docker override
+  template:
+    src: "templates/docker-compose.override.yml"
+    dest: "{{lemmy_base_dir}}/{{domain}}/docker-compose.override.yml"
+    mode: "0600"

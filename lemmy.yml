@@ -213,6 +213,8 @@
           owner: "www-data"
       tags:
         - directories
+    
+    - include_tasks: tasks/docker-override.yml
 
     - name: Deploy configuration files
       block:
