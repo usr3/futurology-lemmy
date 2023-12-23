@@ -4,3 +4,16 @@ services:
   postfix:
     volumes:
       - ./volumes/postfix-relay:/etc/opendkim/keys
+
+  # Alternative frontends
+  mlmym:
+    image: ghcr.io/rystaf/mlmym:latest
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      - LEMMY_DOMAIN=futurology.today
+      - LISTING=Local
+      - SORT=Active
+    restart: "always"
+    logging:
+      driver: none
