@@ -1,0 +1,29 @@
+---
+- name: install ufw
+  apt:
+    name: ufw
+    state: present
+    update_cache: yes
+
+- name: set default deny incoming
+  community.general.ufw:
+    direction: incoming
+    policy: deny
+
+- name: set default allow outgoing
+  community.general.ufw:
+    direction: outgoing
+    policy: allow
+
+- name: enable ufw
+  community.general.ufw:
+    state: enabled
+
+- name: Disable SSH password authentication
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication yes'
+    line: 'PasswordAuthentication no'
+
+- name: Reset SSH to apply changes
+  meta: reset_connection
